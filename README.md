@@ -2,7 +2,7 @@
 
 A production-ready, visually stunning **Streamlit** dashboard for personal finance analytics, powered by **Claude AI** (Anthropic).
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://financeiq.streamlit.app)
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://dataanalytics-4couu4sjqu4ykhnzl7wn22.streamlit.app/)
 
 ---
 
