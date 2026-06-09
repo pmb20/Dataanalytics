@@ -496,11 +496,22 @@ Keep the tone professional but friendly. Format numbers in Indian notation (Lakh
     return prompt
 
 
+def get_api_key() -> str:
+    """Read API key from st.secrets (Streamlit Cloud) or environment variable."""
+    try:
+        return st.secrets["ANTHROPIC_API_KEY"]
+    except Exception:
+        return os.environ.get("ANTHROPIC_API_KEY", "")
+
+
 @st.cache_data(ttl=300, show_spinner=False)
 def get_ai_insights(prompt_key: str, prompt: str) -> str:
     try:
         import anthropic
-        client = anthropic.Anthropic()
+        api_key = get_api_key()
+        if not api_key:
+            return "⚠️ **API key not found.**\n\nTo enable AI Insights:\n- **Locally**: set `ANTHROPIC_API_KEY` environment variable\n- **Streamlit Cloud**: add `ANTHROPIC_API_KEY = \"sk-ant-...\"` in App Settings → Secrets"
+        client = anthropic.Anthropic(api_key=api_key)
         msg = client.messages.create(
             model="claude-sonnet-4-20250514",
             max_tokens=1500,
@@ -510,14 +521,17 @@ def get_ai_insights(prompt_key: str, prompt: str) -> str:
     except ImportError:
         return "⚠️ The `anthropic` package is not installed. Run `pip install anthropic` to enable AI Insights."
     except Exception as e:
-        return f"⚠️ Could not generate insights: {str(e)}\n\nMake sure `ANTHROPIC_API_KEY` environment variable is set."
+        return f"⚠️ Could not generate insights: {str(e)}"
 
 
 @st.cache_data(ttl=300, show_spinner=False)
 def ask_claude(question: str, context: str) -> str:
     try:
         import anthropic
-        client = anthropic.Anthropic()
+        api_key = get_api_key()
+        if not api_key:
+            return "⚠️ API key not set. Add `ANTHROPIC_API_KEY` to your environment or Streamlit secrets."
+        client = anthropic.Anthropic(api_key=api_key)
         msg = client.messages.create(
             model="claude-sonnet-4-20250514",
             max_tokens=800,
